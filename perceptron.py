@@ -1,125 +1,126 @@
-import datos
-import grafico
+import data
+import plots
 
-#FUNCIONES DE ACTIVACION
+# ACTIVATION FUNCTIONS
 
-#FUNCION ESCALONADA
+# STEP FUNCTION
 
-def funcion_escalonada(entrada):
-    if entrada > 0:
+def step_function(input_value):
+    if input_value > 0:
         return 1
     else:
         return 0
     
         
-#FUNCION SIGMOIDE
+# SIGMOID FUNCTION
 
-def funcion_sigmoide(entrada):
+def sigmoid_function(input_value):
     euler = 2.718281828
 
-    e_calculado = euler ** -entrada
-    suma_total = 1 + e_calculado 
-    valor_sigmoide = 1/suma_total
+    calculated_e = euler ** -input_value
+    total_sum = 1 + calculated_e 
+    sigmoid_value = 1 / total_sum
 
-    # if valor_sigmoide > 0:
+    # if sigmoid_value > 0:
     #     return 1 
     # else:
     #     return 0
 
-    return valor_sigmoide
+    return sigmoid_value
 
-#DEFINIR FUNCIONES
+# SET FUNCTIONS
 
-def definir_funcion_de_activacion():
+def set_activation_function():
 
-    opcion_valida = False
-    funcion_seleccionada = None
+    valid_option = False
+    selected_function = None
     
-    while not opcion_valida:
-        print('Funcion de activacion')
-        print('1. Funcion Escalonada')
-        print('2. Funcion Sigmoide')
+    while not valid_option:
+        print('Activation Function')
+        print('1. Step Function')
+        print('2. Sigmoid Function')
 
-        opcion = input('Selecciona una funcion de activacion ')
+        option = input('Select an activation function: ')
 
-        if opcion == '1':
-            funcion_seleccionada = funcion_escalonada
+        if option == '1':
+            selected_function = step_function
             break
-        elif opcion == '2':
-            funcion_seleccionada = funcion_sigmoide
+        elif option == '2':
+            selected_function = sigmoid_function
             break
         else:
-            print('Opcion no valida. Intente otra vez')
+            print('Invalid option. Please try again.')
      
-    return funcion_seleccionada
+    return selected_function
 
-#DEFINIR PESOS
+# INITIALIZE WEIGHTS
 
-def definir_pesos(encabezados): 
+def initialize_weights(headers): 
     
         while True:
             try:
-                b = float(input('Ingresa el valor del sesgo / bias '))
+                b = float(input('Enter the bias value: '))
                 break
             except ValueError:
-                print('Inserta un valor valido')
+                print('Please enter a valid number.')
         
-        pesos = []
+        weights = []
         
-        for header in encabezados[:-1]:
+        for header in headers[:-1]:
             while True:
                 try:
-                    w = float(input(f'Ingresa el peso para la variable {header}: '))
-                    pesos.append(w)
+                    w = float(input(f'Enter the weight for variable {header}: '))
+                    weights.append(w)
                     break
                 except ValueError:
-                    print('Inserta un valor valido')
+                    print('Please enter a valid number.')
 
-        print("Pesos guardados", pesos, 'Sesgo guardado', b)
+        print("Saved weights:", weights, '| Saved bias:', b)
 
-        return pesos, b 
+        return weights, b 
 
 
-#FUNNCION Z
+# Z FUNCTION
 
-def calcular_z(matriz_datos, encabezados, pesos, b, funcion_seleccionada):
+def calculate_z(data_matrix, headers, weights, b, selected_function):
 
-    historial_inputs = []
-    historial_esperados = []
-    historial_predichos = []
-    historial_errores = []  
+    inputs_history = []
+    expected_history = []
+    predicted_history = []
+    errors_history = []  
 
-    for fila in matriz_datos:
+    for row in data_matrix:
         z = b 
-        entradas = (fila[:-1])
-        valor_esperado = fila[-1]
+        inputs = (row[:-1])
+        expected_value = row[-1]
 
-        for dato, w in zip(entradas, pesos):
-            z = z + (dato * w)
+        for value, w in zip(inputs, weights):
+            z = z + (value * w)
 
-        prediccion = funcion_seleccionada(z)
+        prediction = selected_function(z)
         
-        error = valor_esperado - prediccion
+        error = expected_value - prediction
 
-        print(f"Z: {z:.2f} | Esperado: {valor_esperado} -> Predicción: {prediccion:.1f}")
+        print(f"Z: {z:.2f} | Expected: {expected_value} -> Prediction: {prediction:.1f}")
 
-        historial_inputs.append(entradas)
-        historial_esperados.append(valor_esperado)
-        historial_predichos.append(prediccion)
-        historial_errores.append(error)
-    return historial_inputs, historial_esperados, historial_predichos, historial_errores, pesos, b, encabezados
+        inputs_history.append(inputs)
+        expected_history.append(expected_value)
+        predicted_history.append(prediction)
+        errors_history.append(error)
+        
+    return inputs_history, expected_history, predicted_history, errors_history, weights, b, headers
 
-#EJECUCION PERCEPTRON
+# RUN PERCEPTRON
 
-def iniciar_perceptron(matriz, titulos, funcion_elegida):
-    print('Iniciando Perceptron')
+def run_perceptron(data_matrix, headers, chosen_function):
+    print('Starting Perceptron...')
 
-    lista_pesos, valor_b = definir_pesos(titulos)
+    weights_list, b_value = initialize_weights(headers)
 
-    inputs, esperados, predichos, errores, pesos, b, encabezados = calcular_z(matriz, titulos, lista_pesos, valor_b, funcion_elegida)
+    inputs, expected, predicted, errors, weights, b, headers = calculate_z(data_matrix, headers, weights_list, b_value, chosen_function)
 
-    print("Calculo finalizado.")
+    print("Calculation finished.")
        
-    grafico.graficar_resultados(inputs, esperados, predichos, errores, pesos[0], pesos[1], b, encabezados[0], encabezados[1])
+    plots.plot_results(inputs, expected, predicted, errors, weights[0], weights[1], b, headers[0], headers[1])
        
-    return inputs, esperados, predichos, errores, pesos, b, encabezados
+    return inputs, expected, predicted, errors, weights, b, headers

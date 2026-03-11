@@ -20,7 +20,7 @@ def main():
                 print("Perceptron finalizado. Gracias!")
                 return 
             else:
-                print("Opción no válida. Por favor escribe 's' o 'n'.")
+                print("Invalid option. Please type 'y' or 'n'.")
 
 if __name__ == "__main__":
     main()
