@@ -1,23 +1,23 @@
 import perceptron
-import datos
+import data
 
-matriz, titulos = datos.cargar_datos_csv()
+data_matrix, headers = data.load_csv_data()
 
-funcion_elegida = perceptron.definir_funcion_de_activacion()
+chosen_function = perceptron.set_activation_function()
 
 def main():
 
     while True:
-        perceptron.iniciar_perceptron(matriz, titulos, funcion_elegida)
+        perceptron.run_perceptron(data_matrix, headers, chosen_function)
              
         while True:
-            pregunta = input("\n¿Deseas probar con otros pesos? Por favor escribe 's' o 'n' ").lower()
+            question = input("\nDo you want to try with different weights? Please type 'y' or 'n': ").lower()
             
-            if pregunta == 's':
+            if question == 'y':
                 print("-" * 35)
                 break  
-            elif pregunta == 'n':
-                print("Perceptron finalizado. Gracias!")
+            elif question == 'n':
+                print("Perceptron finished. Thank you!")
                 return 
             else:
                 print("Invalid option. Please type 'y' or 'n'.")
